@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="240.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="identitycard2.LoginController">
+   <children>
+      <Button fx:id="btn_login" layoutX="169.0" layoutY="191.0" mnemonicParsing="false" text="Login" />
+      <Text layoutX="149.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DIgital Identity " />
+      <VBox layoutX="154.0" layoutY="54.0" prefHeight="68.0" prefWidth="171.0">
+         <children>
+            <CheckBox fx:id="cb_use_pin" mnemonicParsing="false" text="Use PIN" />
+            <CheckBox fx:id="cb_use_finger" mnemonicParsing="false" prefHeight="18.0" prefWidth="187.0" text="Use finger print" />
+            <CheckBox fx:id="cb_use_face" mnemonicParsing="false" text="Use face recognize" />
+         </children>
+      </VBox>
+      <PasswordField fx:id="tf_pin" layoutX="60.0" layoutY="147.0" prefHeight="25.0" prefWidth="288.0" promptText="PIN" />
+   </children>
+</AnchorPane>
