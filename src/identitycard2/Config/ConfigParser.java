@@ -5,7 +5,7 @@
  */
 package identitycard2.Config;
 
-import identitycard2.RemoteIssuer.GetCertTask;
+import identitycard2.JoinApi.GetCertTask;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.MalformedURLException;

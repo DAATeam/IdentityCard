@@ -55,5 +55,18 @@ public class MD5Helper {
             return null;
         }
     }
+    public static byte[] hashBytesToByte(byte[] input){
+        if(input == null){
+            return null;
+        }
+        try{
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+        byte[] h = digest.digest(input);
+        return h;
+        }catch(Exception e){
+            System.out.println(TAG + e.getMessage());
+            return null;
+        }
+    }
     
 }

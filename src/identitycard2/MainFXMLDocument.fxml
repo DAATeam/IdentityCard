@@ -44,10 +44,42 @@
                               <Label fx:id="txt_user_job_trust" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
+                        <Button fx:id="btn_online" layoutX="484.0" layoutY="6.0" mnemonicParsing="false" text="Go Online" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
+            <Tab text="Verification">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="35.0" text="Verifier URL" />
+                        <TextField fx:id="txt_verify_url" layoutX="102.0" layoutY="29.0" prefHeight="25.0" prefWidth="400.0" />
+                        <Button fx:id="btn_verify" layoutX="524.0" layoutY="29.0" mnemonicParsing="false" text="Verify" />
+                        <GridPane layoutX="14.0" layoutY="71.0" prefHeight="91.0" prefWidth="381.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="127.0" minWidth="10.0" prefWidth="96.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="208.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="105.0" minWidth="10.0" prefWidth="74.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="106.0" text="Service" />
+                              <Label text="Permission" GridPane.rowIndex="1" />
+                              <Label fx:id="label_service_name" prefHeight="15.0" prefWidth="202.0" text="---" GridPane.columnIndex="1" />
+                              <Label fx:id="label_service_permission" prefHeight="15.0" prefWidth="203.0" text="---" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="label_service_name_trust" text="---" GridPane.columnIndex="2" />
+                              <Label fx:id="label_service_per_trust" text="---" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
           <Tab text="Advanced">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

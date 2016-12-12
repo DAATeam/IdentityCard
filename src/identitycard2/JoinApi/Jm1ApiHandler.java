@@ -3,20 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package identitycard2.RemoteIssuer;
+package identitycard2.JoinApi;
 
-import identitycard2.DirtyWork;
-import identitycard2.Models.Authenticator;
 import identitycard2.Models.Issuer;
 import identitycard2.Tools.Data;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -26,55 +22,32 @@ import org.json.JSONObject;
  *
  * @author nguyenduyy
  */
-public class CertApiHandler {
-    private GetCertTask remoteIssuer = null;
-    private Issuer.JoinMessage2 jm2=null;
-    private String basename=null;
-    private Issuer.JoinMessage1 jm1=null;
-    
-    private String message = null;
-    private BigInteger gsk = null;
-    private Authenticator.EcDaaSignature signature = null;
-    
-    public final static String TAG_NONCE = "nonce=";
-    public final static String TAG_SIG = "sig=";
-    public final static String TAG_BASENAME = "basename=";
+public class Jm1ApiHandler {
+    private GetCertTask remoteIssuer;
+    private Issuer.JoinMessage1 jm1;
+    private String jm1JSON;
+    private String field;
     //output
-    private String certJSON = null;
+    private String Jm2JSON ;
     
-
-    public Authenticator.EcDaaSignature getSignature() {
-        return signature;
-    }
-
-    public void setSignature(Authenticator.EcDaaSignature signature) {
-        this.signature = signature;
-    }
-
-       
-    public CertApiHandler(){
+    
+    public static final String TAG_JM1 = "jm1=";
+    public static final String TAG_field = "field=";
+    public Jm1ApiHandler(){
         
     }
+    
     public String getPOSTData(){
         StringBuilder builder = new StringBuilder();
-        builder.append(TAG_NONCE+jm1.nonce.toString());
+        builder.append(TAG_JM1+jm1JSON);
         builder.append("&");
-        builder.append(TAG_BASENAME+basename);
-        builder.append("&");
-        try {
-            signature = remoteIssuer.getAuthenticator().EcDaaSign(basename, message);
-            
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(CertApiHandler.class.getName()).log(Level.SEVERE, null, ex);
-            signature = null;
-        }
-        builder.append(TAG_SIG+DirtyWork.bytesToHex(signature.encode(remoteIssuer.getCurve())));
+        builder.append(TAG_field+field);
         return builder.toString();
         
     }
     public void processApi(){
         try {
-            URL url=new URL(remoteIssuer.getAddress().toString()+"/cert");
+            URL url=new URL(remoteIssuer.getAddress().toString()+"/jm1");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             if(setupConnection(connection)){
                 handleResponse(connection);
@@ -83,8 +56,9 @@ public class CertApiHandler {
             Logger.getLogger(Jm1ApiHandler.class.getName()).log(Level.SEVERE, null, ex);
             
         }
+       
     }
-     private boolean setupConnection(HttpURLConnection c){
+    private boolean setupConnection(HttpURLConnection c){
           try {
             c.setRequestMethod("POST");
             String data = getPOSTData();
@@ -134,17 +108,35 @@ public class CertApiHandler {
     private void onSuccess(JSONObject json){
         if(json != null){
             try {
-                certJSON = json.getString(ApiFormat.CERT);
-                
+                Jm2JSON = json.getString(ApiFormat.JM2);
+
             } catch (Exception ex) {
                 Logger.getLogger(Jm1ApiHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-    private void onError(JSONObject json){
-        certJSON = null;
+
+
+    public String getJm2JSON() {
+        return Jm2JSON;
     }
 
+    public void setJm2JSON(String Jm2JSON) {
+        this.Jm2JSON = Jm2JSON;
+    }
+    private void onError(JSONObject json){
+        
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+    
+    
     public GetCertTask getRemoteIssuer() {
         return remoteIssuer;
     }
@@ -153,56 +145,21 @@ public class CertApiHandler {
         this.remoteIssuer = remoteIssuer;
     }
 
-    public Issuer.JoinMessage2 getJm2() {
-        return jm2;
-    }
-
-    public void setJm2(Issuer.JoinMessage2 jm2) {
-        this.jm2 = jm2;
-    }
-
-    public String getBasename() {
-        return basename;
-    }
-
-    public void setBasename(String basename) {
-        this.basename = basename;
-    }
-
     public Issuer.JoinMessage1 getJm1() {
         return jm1;
     }
 
     public void setJm1(Issuer.JoinMessage1 jm1) {
         this.jm1 = jm1;
-    }
-   
-
-    public String getMessage() {
-        return message;
+        this.jm1JSON = jm1.toJson(remoteIssuer.getCurve());
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getJm1JSON() {
+        return jm1JSON;
     }
 
-    public BigInteger getGsk() {
-        return gsk;
+    public void setJm1JSON(String jm1JSON) {
+        this.jm1JSON = jm1JSON;
     }
-
-    public void setGsk(BigInteger gsk) {
-        this.gsk = gsk;
-    }
-
-    public String getCertJSON() {
-        return certJSON;
-    }
-
-    public void setCertJSON(String certJSON) {
-        this.certJSON = certJSON;
-    }
-    
-    
-    
     
 }

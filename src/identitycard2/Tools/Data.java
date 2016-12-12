@@ -8,8 +8,9 @@ package identitycard2.Tools;
 import identitycard2.Config.ConfigParser;
 import identitycard2.DirtyWork;
 import identitycard2.IdentityCard2;
+import identitycard2.Models.Authenticator;
 import identitycard2.Models.Issuer;
-import identitycard2.RemoteIssuer.ApiFormat;
+import identitycard2.JoinApi.ApiFormat;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,6 +20,8 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import org.json.JSONObject;
 import identitycard2.crypto.AESEncryptor;
+import identitycard2.crypto.BNCurve;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Observable;
@@ -37,11 +40,18 @@ public class Data extends Observable{
     private String esk;
     private String ipk;
     
+    
     private String appId , curve;
+    private BNCurve BNCurve = null;
     
     private File file = null;
     private Application application = null;
     private byte[] decryptKey = null;
+    
+    public final String MESSAGE = "message";
+    public final String SIG = "sig";
+    public final String CERT = "cert";
+    
 
     @Override
     protected synchronized void setChanged() {
@@ -190,6 +200,13 @@ public class Data extends Observable{
             f.setValue(value);
         }
     }
+    public void addSig(String TAG, String sig){
+        int id = findFieldId(TAG);
+        if(id >=0){
+            Field f = fields.get(id);
+            f.setSig(sig);
+        }
+    }
     public void addCredential(String TAG, String cr){
         int id = findFieldId(TAG);
         if(id >=0){
@@ -244,6 +261,13 @@ public class Data extends Observable{
         Field f = fields.get(findFieldId(field));
         if(f!= null){
             return f.getGsk();
+        }
+        else return null;
+    }
+    public String getSigOfField(String field){
+        Field f = fields.get(findFieldId(field));
+        if(f!= null){
+            return f.getSig();
         }
         else return null;
     }
@@ -309,6 +333,49 @@ public class Data extends Observable{
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+    
+    public BNCurve getBNCurve(){
+        if(BNCurve == null){
+            BNCurve = BNCurve.createBNCurveFromName(curve);
+            return BNCurve;
+        }
+        else{
+            return BNCurve;
+        }
+    }
+    public Issuer.IssuerPublicKey getIssuerPubicKey(){
+        if(ipk != null){
+            Issuer.IssuerPublicKey pk = new Issuer.IssuerPublicKey(getBNCurve(),ipk);
+            return pk;
+        }
+        else return null;
+        
+    }
+    public Authenticator getAuthenticator(String field){
+        try{
+            Issuer.IssuerPublicKey ipk = getIssuerPubicKey();
+            BNCurve curve = getBNCurve();
+            BigInteger sk = new BigInteger(getGskOfField(field));
+            Authenticator a = new Authenticator(curve, ipk, sk);
+            Issuer.JoinMessage2 jm2 = new Issuer.JoinMessage2(curve,getCredentialOfField(field) );
+            a.EcDaaJoin2(jm2);
+            return a;
+        }catch(Exception e){
+            return null;
+        }
+    }
+    public JSONObject getJSONByField(String f){
+        JSONObject json = new JSONObject();
+          try {
+              json.put(ApiFormat.VALUE,getValueOfField(f));
+              //json.put(ApiFormat.SIG, getSigOfField(f)); //nym problem
+              json.put(ApiFormat.CERT, getCertOfField(f));
+              return json;
+          } catch (JSONException ex) {
+              Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+              return null;
+          }
     }
 
 }

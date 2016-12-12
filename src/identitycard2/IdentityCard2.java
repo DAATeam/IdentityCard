@@ -56,5 +56,9 @@ public class IdentityCard2 extends Application {
         Data.reset();
         
     }
+     @Override
+    public void stop(){
+        
+    }
     
 }

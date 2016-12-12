@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package identitycard2.RemoteIssuer;
+package identitycard2.JoinApi;
 
 /**
  *
@@ -11,6 +11,10 @@ package identitycard2.RemoteIssuer;
  */
 public class ApiFormat {
     public static final String STATUS = "status";
+    public static final String VALUE = "message";
+    public static final String SIG = "sig";
+    public static final String SESSIONID = "sessionId";
+    public static final String SESSION_SIG = "session_sig";
     public static final String MESSAGE = "msg";
     public static final String DATA = "data";
     public static final String OK = "ok";

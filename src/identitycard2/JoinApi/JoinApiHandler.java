@@ -3,16 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package identitycard2.RemoteIssuer;
+package identitycard2.JoinApi;
 
+import identitycard2.DirtyWork;
+import identitycard2.Models.Authenticator;
 import identitycard2.Models.Issuer;
 import identitycard2.Tools.Data;
+import identitycard2.crypto.BNCurve;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -22,45 +28,43 @@ import org.json.JSONObject;
  *
  * @author nguyenduyy
  */
-public class Jm1ApiHandler {
+public class JoinApiHandler {
+    private String M; //PIN or finger printing
+    public final String TAG_M = "M=";
+    private String appId ; //provide by issuer
+    public final String TAG_appId = "appId=";
     private GetCertTask remoteIssuer;
-    private Issuer.JoinMessage1 jm1;
-    private String jm1JSON;
-    private String field;
     //output
-    private String Jm2JSON ;
     
+    private String curveName= null;
+    private String ipkJSON = null;
+    private String nonceString = null;
     
-    public static final String TAG_JM1 = "jm1=";
-    public static final String TAG_field = "field=";
-    public Jm1ApiHandler(){
-        
+    public JoinApiHandler(GetCertTask remoteIssuer){
+        this.remoteIssuer = remoteIssuer;
     }
-    
     public String getPOSTData(){
-        StringBuilder builder = new StringBuilder();
-        builder.append(TAG_JM1+jm1JSON);
-        builder.append("&");
-        builder.append(TAG_field+field);
-        return builder.toString();
-        
+        StringBuilder data = new StringBuilder();
+        data.append(TAG_M + M);
+        data.append("&");
+        data.append(TAG_appId + appId);
+        return data.toString();
     }
     public void processApi(){
         try {
-            URL url=new URL(remoteIssuer.getAddress().toString()+"/jm1");
+            URL url=new URL(remoteIssuer.getAddress().toString()+"/join");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             if(setupConnection(connection)){
                 handleResponse(connection);
             }
         } catch (IOException ex) {
-            Logger.getLogger(Jm1ApiHandler.class.getName()).log(Level.SEVERE, null, ex);
-            
+            Logger.getLogger(JoinApiHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
     }
     private boolean setupConnection(HttpURLConnection c){
-          try {
+        try {
             c.setRequestMethod("POST");
+            
             String data = getPOSTData();
             c.setFixedLengthStreamingMode(data.length());
             c.setDoOutput(true);
@@ -73,9 +77,10 @@ public class Jm1ApiHandler {
             return false;
         }
         return true;
+        
     }
     private boolean handleResponse(HttpURLConnection con){
-         BufferedReader in;
+        BufferedReader in;
         try {
             in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
@@ -104,39 +109,47 @@ public class Jm1ApiHandler {
             return false;
         }
         return true;
+		
     }
     private void onSuccess(JSONObject json){
-        if(json != null){
-            try {
-                Jm2JSON = json.getString(ApiFormat.JM2);
-
-            } catch (Exception ex) {
-                Logger.getLogger(Jm1ApiHandler.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+           
+            if( json!= null){
+                curveName = json.getString(ApiFormat.CURVE);
+                ipkJSON = json.getString(ApiFormat.CL_IPK);
+                nonceString = json.getString(ApiFormat.CL_NONCE);
             }
+
+        } catch (Exception ex) {
+            Logger.getLogger(JoinApiHandler.class.getName()).log(Level.SEVERE, null, ex);
+            curveName = null;
+            ipkJSON = null;
+            
         }
     }
-
-
-    public String getJm2JSON() {
-        return Jm2JSON;
-    }
-
-    public void setJm2JSON(String Jm2JSON) {
-        this.Jm2JSON = Jm2JSON;
-    }
+    
+    
     private void onError(JSONObject json){
-        
+        curveName = null;
+        ipkJSON = null;
     }
 
-    public String getField() {
-        return field;
+    public String getM() {
+        return M;
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public void setM(String M) {
+        this.M = M;
     }
-    
-    
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
     public GetCertTask getRemoteIssuer() {
         return remoteIssuer;
     }
@@ -145,21 +158,30 @@ public class Jm1ApiHandler {
         this.remoteIssuer = remoteIssuer;
     }
 
-    public Issuer.JoinMessage1 getJm1() {
-        return jm1;
+    public String getCurveName() {
+        return curveName;
     }
 
-    public void setJm1(Issuer.JoinMessage1 jm1) {
-        this.jm1 = jm1;
-        this.jm1JSON = jm1.toJson(remoteIssuer.getCurve());
+    public void setCurveName(String curveName) {
+        this.curveName = curveName;
     }
 
-    public String getJm1JSON() {
-        return jm1JSON;
+    public String getIpkJSON() {
+        return ipkJSON;
     }
 
-    public void setJm1JSON(String jm1JSON) {
-        this.jm1JSON = jm1JSON;
+    public void setIpkJSON(String ipkJSON) {
+        this.ipkJSON = ipkJSON;
     }
+
+    public String getNonceString() {
+        return nonceString;
+    }
+
+    public void setNonceString(String nonceString) {
+        this.nonceString = nonceString;
+    }
+    
+ 
     
 }

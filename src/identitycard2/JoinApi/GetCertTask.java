@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package identitycard2.RemoteIssuer;
+package identitycard2.JoinApi;
 
 import identitycard2.DirtyWork;
 import identitycard2.Models.Authenticator;

@@ -23,6 +23,8 @@ public class Field {
     private String TAG_cert;
     private String credential;
     private String TAG_credential;
+    private String sig;
+    private String TAG_sig;
     public Field(String TAG){
         this.TAG = TAG;
         this.TAG_gsk = "gsk_"+TAG;
@@ -32,7 +34,25 @@ public class Field {
         this.cert="";
         this.credential="";
         this.value="";
+        sig="";
+        TAG_sig = "sig_"+TAG;
         
+    }
+
+    public String getSig() {
+        return sig;
+    }
+
+    public void setSig(String sig) {
+        this.sig = sig;
+    }
+
+    public String getTAG_sig() {
+        return TAG_sig;
+    }
+
+    public void setTAG_sig(String TAG_sig) {
+        this.TAG_sig = TAG_sig;
     }
     public JSONObject putToJSONObject(JSONObject json){
         if(json != null){
