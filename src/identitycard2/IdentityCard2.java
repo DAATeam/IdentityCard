@@ -27,9 +27,9 @@ public class IdentityCard2 extends Application {
         LoginController loginController = (LoginController) loader.getController();
         loginController.setApplication(this);
         Shadow shadow = new Shadow(this);
-        shadow.createShadow("daa");
+        shadow.createShadow("1234");
         Data data = Data.getInstance(this);
-        addDemoData(data);
+        //addDemoData(data);
         
         Scene scene = new Scene(root);
         stage.setScene(scene);

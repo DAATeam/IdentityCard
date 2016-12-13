@@ -21,6 +21,7 @@ import javafx.application.Application;
 import org.json.JSONObject;
 import identitycard2.crypto.AESEncryptor;
 import identitycard2.crypto.BNCurve;
+import identitycard2.crypto.BitKeySelector;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Map;
@@ -227,7 +228,7 @@ public class Data extends Observable{
         try {
             if(file != null && decryptKey != null){
             byte[] b = Files.readAllBytes(file.toPath());
-            String j = AESEncryptor.decrypt(new String(decryptKey), IV, b);
+            String j = AESEncryptor.decrypt(BitKeySelector.getAES128Key(decryptKey), IV, b);
             parseFromJSON(new JSONObject(j));
             }
             

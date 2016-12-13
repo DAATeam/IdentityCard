@@ -115,8 +115,15 @@ public class MainController implements Initializable, Observer {
     }
     public void updateView(){
         
-        txt_user_name.setText(data.getValueOfField("user_name"));
-        txt_user_job.setText(data.getValueOfField("user_job"));
+        try {
+            JSONObject jj =new JSONObject(data.getValueOfField("user_job"));
+            JSONObject jn =new JSONObject(data.getValueOfField("user_name"));
+            txt_user_name.setText(jn.getString("user_name"));
+        txt_user_job.setText(jj.getString("user_job"));
+        } catch (JSONException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         //nees to  move to a thread
                     
         

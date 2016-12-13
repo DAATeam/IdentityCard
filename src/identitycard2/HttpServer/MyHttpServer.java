@@ -16,6 +16,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +28,7 @@ import java.util.logging.Logger;
 public class MyHttpServer {
     private int port = 6969;
     HttpServer httpServer = null;
+    ExecutorService httpThreadPool;
     public static MyHttpServer instance= null;
     public static MyHttpServer getInstance(){
         if(instance == null) {
@@ -36,7 +39,10 @@ public class MyHttpServer {
     }
     public void stop(){
         
-        httpServer.stop(0);
+        this.httpServer.stop(1);
+        this.httpThreadPool.shutdownNow();
+
+
     }
     public void start(){
         httpServer.start();
@@ -44,6 +50,8 @@ public class MyHttpServer {
     private MyHttpServer(){
         try {
             httpServer = HttpServer.create(new InetSocketAddress(port), 0);
+             httpThreadPool= Executors.newFixedThreadPool(1);
+             httpServer.setExecutor(httpThreadPool);
             httpServer.createContext("/", new indexGetHandler());
             httpServer.createContext("/verify", new verifyServicePostHandler());
             httpServer.createContext("/new", new newSessionGetHandler());

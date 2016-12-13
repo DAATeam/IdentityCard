@@ -13,8 +13,11 @@
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/JoinApi/CertApiHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/JoinApi/Jm1ApiHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Tools/Data.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/crypto/MD5Helper.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyApi/verifyApiHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyApi/getVerifierApi.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Models/Authenticator.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Models/Verifier.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/HttpServer/verifyServicePostHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/MainController.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/crypto/DESEncryptor.java</file>

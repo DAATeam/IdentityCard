@@ -46,6 +46,8 @@ public class verifyServicePostHandler implements HttpHandler {
                      response = PackageHandler.getErrorReponse("Invalid input");
                  }
                   he.sendResponseHeaders(200, response.length());
+                  
+                  he.getResponseHeaders().set("Access-Control-Allow-Origin","*");
                  OutputStream os = he.getResponseBody();
                  os.write(response.toString().getBytes());
                  os.close();

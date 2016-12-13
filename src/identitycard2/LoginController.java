@@ -92,7 +92,7 @@ public class LoginController implements Initializable {
             MainController mainController = (MainController) loader.getController();
             mainController.setApplication(application);
             Data data = Data.getInstance(application);
-            data.setDecryptKey(tf_pin.getText().getBytes());
+            data.setDecryptKey( tf_pin.getText().getBytes());
             data.readFromFile();
             mainController.setData(data);
             
