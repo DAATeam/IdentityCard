@@ -26,8 +26,9 @@ public class newSessionGetHandler implements HttpHandler{
         sessionHandler.createSession(sd);
         //response
         String response = sd.getSessionId();
-        he.sendResponseHeaders(200, response.length());
+        
         he.getResponseHeaders().set("Access-Control-Allow-Origin","*");
+        he.sendResponseHeaders(200, response.length());
         OutputStream os = he.getResponseBody();
          sd.setStatus(SessionHandler.SessionStatusEnum.WAIT);
         sessionHandler.updateSession(sd);
