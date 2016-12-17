@@ -228,8 +228,8 @@ public class Data extends Observable{
         try {
             if(file != null && decryptKey != null){
             byte[] b = Files.readAllBytes(file.toPath());
-            String j = AESEncryptor.decrypt(BitKeySelector.getAES128Key(decryptKey), IV, b);
-            parseFromJSON(new JSONObject(j));
+            //String j = AESEncryptor.decrypt(BitKeySelector.getAES128Key(decryptKey), IV, b);
+            parseFromJSON(new JSONObject(new String(b)));
             }
             
             
