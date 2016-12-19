@@ -105,7 +105,7 @@ public class PackageHandler {
         try {
             String message = json.getString(ApiFormat.VALUE);
             String Ssig  = json.getString(ApiFormat.SIG);
-            String Scert = json.getString(ApiFormat.CERT);
+            //String Scert = json.getString(ApiFormat.CERT);
             String Ssid= json.getString(ApiFormat.SESSIONID);
             
             if(localsessionId == null) localsessionId = Ssid;
@@ -115,31 +115,18 @@ public class PackageHandler {
             
             //parse
             if(verifier != null && ipk != null){
-          
+            // signature on sessionId
             Authenticator.EcDaaSignature sig = new Authenticator.EcDaaSignature(
                     DirtyWork.hexStringToByteArray(Ssig),
-                    message.getBytes(),
+                    localsessionId.toString().getBytes(),
                     curve
                     
             );
-            Authenticator.EcDaaSignature cert = new Authenticator.EcDaaSignature(
-                    DirtyWork.hexStringToByteArray(Scert),
-                    sig.encode(curve), // encode without nym 
-                    curve
-                    
-            );
-            Authenticator.EcDaaSignature sessionSig = new Authenticator.EcDaaSignature(
-                    DirtyWork.hexStringToByteArray(Ssesig),
-                    Ssid.getBytes(),
-                    curve
-                    
-            );
+            
+            
             boolean valid = true;
-            valid &= verifier.verify(sig, basename, ipk, null);
-            valid &= verifier.verify(cert, ApiFormat.CERT_BASENAME, ipk, null);
-            valid &= verifier.verify(sessionSig, basename, ipk, null);
-            // FIX : add link fuction
-            valid &= verifier.link(sig, sessionSig);
+            valid &= verifier.verifyWrt(message.getBytes(), localsessionId.getBytes(), sig, basename, ipk, null);
+            
             return valid;
             }
             else return false;
@@ -208,11 +195,12 @@ public class PackageHandler {
                 String message = d.toString();
                 d.put(ApiFormat.SESSIONID, sessionId);
                 Authenticator tmp_aut = Data.getInstance().getAuthenticator(fs[i]);
-                Authenticator.EcDaaSignature sesssig = tmp_aut.EcDaaSignWithNym(fs[i], sessionId,sessionId);
-                Authenticator.EcDaaSignature sig = tmp_aut.EcDaaSignWithNym(fs[i],message,sessionId);
-                d.put(ApiFormat.SESSION_SIG, DirtyWork.bytesToHex(sesssig.encodeWithNym(curve)));
-                d.put(ApiFormat.SIG, DirtyWork.bytesToHex(sig.encodeWithNym(curve)));
-                d.put(ApiFormat.CERT, Data.getInstance().getCertOfField(fs[i]));
+                Issuer.JoinMessage2 jm2 = new Issuer.JoinMessage2(curve, Data.getInstance().getCredentialOfField(fs[i]));
+                //sign sessionId
+                Authenticator.EcDaaSignature sig = tmp_aut.EcDaaSignWrt(sessionId.getBytes(), fs[i],sessionId.toString());
+                
+                d.put(ApiFormat.SIG, DirtyWork.bytesToHex(sig.encode(curve)));
+                
                 res.put(fs[i], d.toString());
             } catch (Exception ex) {
                 Logger.getLogger(PackageHandler.class.getName()).log(Level.SEVERE, null, ex);
