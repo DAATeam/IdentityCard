@@ -124,46 +124,18 @@ public class MainController implements Initializable, Observer {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        //nees to  move to a thread
-                    
-        
-        if(data.getEsk() == null){
-            
-        }
-        else{
-            
-        }
-        if(isNoData(data.getCertOfField("user_name"))){
+       
+        if(isNoData(data.getCredentialOfField("user_name"))){
             txt_user_name_trust.setText(UNTRUSTED);
             JSONObject json = new JSONObject();
-            try {
-                json.put("user_name", data.getValueOfField("user_name"));
-            } catch (JSONException ex) {
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                json = null;
-            }
-            if(json != null){
-                 requestCert(new String(data.getDecryptKey()),
-                    data.getAppId(), "user_name", "user_name",json.toString() );
-            }
-           
-            
+
         }else{
             txt_user_name_trust.setText(TRUSTED);
         }
-        if(isNoData(data.getCertOfField("user_job"))){
+        if(isNoData(data.getCredentialOfField("user_job"))){
             txt_user_job_trust.setText(UNTRUSTED);
              JSONObject json = new JSONObject();
-            try {
-                json.put("user_job", data.getValueOfField("user_job"));
-            } catch (JSONException ex) {
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                json = null;
-            }
-            if(json != null){
-                 requestCert(new String(data.getDecryptKey()),
-                    data.getAppId(), "user_job", "user_job",json.toString() );
-            }
+           
         }
         else{
             txt_user_job_trust.setText(TRUSTED);

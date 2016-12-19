@@ -25,6 +25,8 @@ public class Field {
     private String TAG_credential;
     private String sig;
     private String TAG_sig;
+    private String esk , epk;
+    private String TAG_esk, TAG_epk;
     public Field(String TAG){
         this.TAG = TAG;
         this.TAG_gsk = "gsk_"+TAG;
@@ -36,7 +38,42 @@ public class Field {
         this.value="";
         sig="";
         TAG_sig = "sig_"+TAG;
+        esk = "";TAG_esk = "esk_"+TAG;
+        epk = "";TAG_epk = "epk_"+TAG;
         
+        
+    }
+
+    public String getEsk() {
+        return esk;
+    }
+
+    public void setEsk(String esk) {
+        this.esk = esk;
+    }
+
+    public String getEpk() {
+        return epk;
+    }
+
+    public void setEpk(String epk) {
+        this.epk = epk;
+    }
+
+    public String getTAG_esk() {
+        return TAG_esk;
+    }
+
+    public void setTAG_esk(String TAG_esk) {
+        this.TAG_esk = TAG_esk;
+    }
+
+    public String getTAG_epk() {
+        return TAG_epk;
+    }
+
+    public void setTAG_epk(String TAG_epk) {
+        this.TAG_epk = TAG_epk;
     }
 
     public String getSig() {
@@ -59,8 +96,10 @@ public class Field {
             try {
                 json.put(TAG,value);
                 json.put(TAG_gsk, gsk);
-                json.put(TAG_cert,cert);
+                //json.put(TAG_cert,cert);
                 json.put(TAG_credential, credential);
+                json.put(TAG_epk, epk);
+                json.put(TAG_esk, esk);
             } catch (JSONException ex) {
                 Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);
                 return json;
@@ -74,8 +113,10 @@ public class Field {
         try {
             f.setValue(json.getString(f.getTAG()));
             f.setGsk(json.getString(f.getTAG_gsk()));
-            f.setCert(json.getString(f.getTAG_cert()));
+            //f.setCert(json.getString(f.getTAG_cert()));
             f.setCredential(json.getString(f.getTAG_credential()));
+            f.setEpk(f.getTAG_epk());
+            f.setEsk(f.getTAG_esk());
             return f;
         } catch (JSONException ex) {
             Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,8 +127,10 @@ public class Field {
         try {
             setValue(json.getString(getTAG()));
             setGsk(json.getString(getTAG_gsk()));
-            setCert(json.getString(getTAG_cert()));
+            //setCert(json.getString(getTAG_cert()));
             setCredential(json.getString(getTAG_credential()));
+            setEpk(json.getString(getTAG_epk()));
+            setEsk(json.getString(getTAG_esk()));
             
         } catch (JSONException ex) {
             Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);

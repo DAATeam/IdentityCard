@@ -140,7 +140,7 @@ public class Data extends Observable{
             
             json.put("appId", appId);
             json.put("curve", curve);
-            json.put("esk", esk);
+            //json.put("esk", esk);
             json.put("ipk",ipk);
             for(Field f : fields){
                 json = f.putToJSONObject(json);
@@ -160,7 +160,7 @@ public class Data extends Observable{
             appId =json.getString("appId");
             curve = json.getString("curve");
             ipk = json.getString("ipk");
-            esk = json.getString("esk");
+            //esk = json.getString("esk");
             for(String s : TAGS){
                 int i = findFieldId(s);
                 Field f = fields.get(i);
