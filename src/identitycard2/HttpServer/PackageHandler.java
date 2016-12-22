@@ -48,6 +48,7 @@ public class PackageHandler {
             if(map != null){
                 boolean valid = verifyService(map);
                 if(valid){
+                    
                     String d = generateResponseForService(map);
                     sessionData.setStatus(SessionHandler.SessionStatusEnum.VERIFYOK);
                     SessionHandler.getInstance().updateSession(sessionData);

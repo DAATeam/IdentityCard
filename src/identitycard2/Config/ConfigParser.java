@@ -30,6 +30,7 @@ import org.w3c.dom.NodeList;
 public class ConfigParser {
     public static final String TAG_ADDRESS = "issuer-address";
     public static final String TAG_FIELDS = "fields";
+    public static final String TAG_PORT = "listen-port";
     public static final String CONFIG_FILE_NAME = "config.xml";
     File file;
     Document document;
@@ -93,5 +94,12 @@ public class ConfigParser {
             al.add(items.item(i).getTextContent());
         }
         return al;
+    }
+    public Integer getListenPort(){
+        NodeList nl = document.getElementsByTagName(TAG_PORT);
+        if(nl == null ) return null;
+        Node np = nl.item(0);
+        if(np == null) return null;
+        return new Integer(np.getTextContent());
     }
 }

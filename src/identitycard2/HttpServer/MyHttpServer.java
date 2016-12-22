@@ -8,6 +8,7 @@ package identitycard2.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import identitycard2.Config.ConfigParser;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -49,6 +50,8 @@ public class MyHttpServer {
     }
     private MyHttpServer(){
         try {
+            Integer configPort = ConfigParser.getInstance().getListenPort();
+            if(configPort != null) port = configPort;
             httpServer = HttpServer.create(new InetSocketAddress(port), 0);
              httpThreadPool= Executors.newFixedThreadPool(1);
              httpServer.setExecutor(httpThreadPool);

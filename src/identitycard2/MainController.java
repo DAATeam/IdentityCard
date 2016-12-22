@@ -9,7 +9,7 @@ import identitycard2.Config.ConfigParser;
 import identitycard2.HttpServer.MyHttpServer;
 import identitycard2.JoinApi.GetCertTask;
 import identitycard2.Tools.Data;
-import identitycard2.VerifyApi.verifyApiHandler;
+import identitycard2.VerifyOld.verifyApiHandler;
 
 import java.net.URISyntaxException;
 import java.net.URL;

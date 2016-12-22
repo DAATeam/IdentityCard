@@ -6,4 +6,7 @@
         <item>user_name</item>
         <item>user_job</item>
     </fields>
+    <listen-port>
+        6969
+    </listen-port>
 </root>
