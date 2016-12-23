@@ -116,23 +116,23 @@ public class MainController implements Initializable, Observer {
     public void updateView(){
         
         try {
-            JSONObject jj =new JSONObject(data.getValueOfField("user_job"));
-            JSONObject jn =new JSONObject(data.getValueOfField("user_name"));
+            JSONObject jj =new JSONObject(data.getValueOfField("level_1"));
+            JSONObject jn =new JSONObject(data.getValueOfField("level_police"));
             txt_user_name.setText(jn.getString("user_name"));
-        txt_user_job.setText(jj.getString("user_job"));
+        txt_user_job.setText(jj.getString("user_name"));
         } catch (JSONException ex) {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
        
-        if(isNoData(data.getCredentialOfField("user_name"))){
+        if(isNoData(data.getCredentialOfField("level_1"))){
             txt_user_name_trust.setText(UNTRUSTED);
             JSONObject json = new JSONObject();
 
         }else{
             txt_user_name_trust.setText(TRUSTED);
         }
-        if(isNoData(data.getCredentialOfField("user_job"))){
+        if(isNoData(data.getCredentialOfField("level_police"))){
             txt_user_job_trust.setText(UNTRUSTED);
              JSONObject json = new JSONObject();
            

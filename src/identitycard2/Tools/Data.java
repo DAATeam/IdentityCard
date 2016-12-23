@@ -24,6 +24,7 @@ import identitycard2.crypto.BNCurve;
 import identitycard2.crypto.BitKeySelector;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -154,18 +155,34 @@ public class Data extends Observable{
     }
     public boolean parseFromJSON(JSONObject json){
         try {
-            for(String s :ConfigParser.getInstance().getFields()){
-                addField(s);
-            };
+            
             appId =json.getString("appId");
             curve = json.getString("curve");
+            
             ipk = json.getString("ipk");
             //esk = json.getString("esk");
-            for(String s : TAGS){
-                int i = findFieldId(s);
-                Field f = fields.get(i);
-                f.constructFromTAG(json);
-            }
+            Iterator is = json.keys();
+            do{
+                String k = (String) is.next();
+                if(k.indexOf("level") == 0){
+                    TAGS.add(k);
+                    Field f=  new Field(k);
+                    f.setEpk(json.getString(f.getTAG_epk()));
+                    f.setEsk(json.getString(f.getTAG_esk()));
+                    f.setValue(json.getString(k));
+                    f.setCredential(json.getString(f.getTAG_credential()));
+                    fields.add(f);
+                }
+            }while(is.hasNext());
+            //field permission
+            String k = "permission";
+            TAGS.add("permission");
+            Field f=  new Field(k);
+                    f.setEpk(json.getString(f.getTAG_epk()));
+                    f.setEsk(json.getString(f.getTAG_esk()));
+                    f.setValue(json.getString(k));
+                    f.setCredential(json.getString(f.getTAG_credential()));
+                    fields.add(f);
             
             
         } catch (JSONException ex) {
@@ -187,13 +204,7 @@ public class Data extends Observable{
             f.setGsk(gsk);
         }
     }
-    public void addCert(String TAG, String cert){
-        int id = findFieldId(TAG);
-        if(id >=0){
-            Field f = fields.get(id);
-            f.setCert(cert);
-        }
-    }
+    
     public void addValue(String TAG, String value){
         int id = findFieldId(TAG);
         if(id >=0){
@@ -201,13 +212,7 @@ public class Data extends Observable{
             f.setValue(value);
         }
     }
-    public void addSig(String TAG, String sig){
-        int id = findFieldId(TAG);
-        if(id >=0){
-            Field f = fields.get(id);
-            f.setSig(sig);
-        }
-    }
+    
     public void addCredential(String TAG, String cr){
         int id = findFieldId(TAG);
         if(id >=0){
@@ -244,13 +249,7 @@ public class Data extends Observable{
         }
         else return null;
     }
-    public String getCertOfField(String field){
-        Field f = fields.get(findFieldId(field));
-        if(f!= null){
-            return f.getCert();
-        }
-        else return null;
-    }
+    
     public String getCredentialOfField(String field){
         Field f = fields.get(findFieldId(field));
         if(f!= null){
@@ -265,13 +264,7 @@ public class Data extends Observable{
         }
         else return null;
     }
-    public String getSigOfField(String field){
-        Field f = fields.get(findFieldId(field));
-        if(f!= null){
-            return f.getSig();
-        }
-        else return null;
-    }
+    
     public boolean save(){
         String d = toJSON();
         byte[] b = AESEncryptor.encrypt(new String(decryptKey), IV, d);
@@ -286,7 +279,7 @@ public class Data extends Observable{
     public void update(Map<String,String> map){
         if(map != null){
         String field = map.get(ApiFormat.FIELD);
-        addCert(field, map.get(ApiFormat.CERT));
+    
         addGsk(field, map.get(ApiFormat.GSK));
         addCredential(field, map.get(ApiFormat.CREDENTIAL));
         //notify data has changed
@@ -371,7 +364,7 @@ public class Data extends Observable{
           try {
               json.put(ApiFormat.VALUE,getValueOfField(f));
               //json.put(ApiFormat.SIG, getSigOfField(f)); //nym problem
-              json.put(ApiFormat.CERT, getCertOfField(f));
+    
               return json;
           } catch (JSONException ex) {
               Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);

@@ -19,25 +19,22 @@ public class Field {
     private String value;
     private String gsk;
     private String TAG_gsk;
-    private String cert;
-    private String TAG_cert;
+
     private String credential;
     private String TAG_credential;
-    private String sig;
-    private String TAG_sig;
+
     private String esk , epk;
     private String TAG_esk, TAG_epk;
     public Field(String TAG){
         this.TAG = TAG;
         this.TAG_gsk = "gsk_"+TAG;
-        this.TAG_cert ="cert_"+TAG;
+
         this.TAG_credential = "credential_"+TAG;
         this.gsk="";
-        this.cert="";
+
         this.credential="";
         this.value="";
-        sig="";
-        TAG_sig = "sig_"+TAG;
+
         esk = "";TAG_esk = "esk_"+TAG;
         epk = "";TAG_epk = "epk_"+TAG;
         
@@ -76,21 +73,7 @@ public class Field {
         this.TAG_epk = TAG_epk;
     }
 
-    public String getSig() {
-        return sig;
-    }
 
-    public void setSig(String sig) {
-        this.sig = sig;
-    }
-
-    public String getTAG_sig() {
-        return TAG_sig;
-    }
-
-    public void setTAG_sig(String TAG_sig) {
-        this.TAG_sig = TAG_sig;
-    }
     public JSONObject putToJSONObject(JSONObject json){
         if(json != null){
             try {
@@ -146,13 +129,7 @@ public class Field {
         this.TAG_gsk = TAG_gsk;
     }
 
-    public String getTAG_cert() {
-        return TAG_cert;
-    }
 
-    public void setTAG_cert(String TAG_cert) {
-        this.TAG_cert = TAG_cert;
-    }
 
     public String getTAG_credential() {
         return TAG_credential;
@@ -186,13 +163,7 @@ public class Field {
         this.gsk = gsk;
     }
 
-    public String getCert() {
-        return cert;
-    }
 
-    public void setCert(String cert) {
-        this.cert = cert;
-    }
 
     public String getCredential() {
         return credential;

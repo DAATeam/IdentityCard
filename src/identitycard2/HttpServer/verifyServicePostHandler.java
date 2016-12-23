@@ -43,7 +43,7 @@ public class verifyServicePostHandler implements HttpHandler {
                  // send response
                  if(response == null){
                      
-                     response = PackageHandler.getErrorReponse("Invalid input");
+                     response = PackageHandler.getErrorReponse("Invalid input, miss status field");
                  }
                  
                   

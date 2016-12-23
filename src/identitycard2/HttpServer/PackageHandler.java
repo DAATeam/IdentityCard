@@ -12,6 +12,8 @@ import identitycard2.Models.Issuer;
 import identitycard2.Models.Verifier;
 import identitycard2.Tools.Data;
 import identitycard2.crypto.BNCurve;
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,7 +27,8 @@ import org.json.JSONObject;
  * @author nguyenduyy
  */
 public class PackageHandler {
-    
+    public static String PERMISSION = "permission";
+    public static String CREDENTIAL = "credential";
     JSONObject json = null;
     String localsessionId = null;
     Verifier verifier = null;
@@ -48,6 +51,8 @@ public class PackageHandler {
             if(map != null){
                 boolean valid = verifyService(map);
                 if(valid){
+                    String sn = extractServiceName(map);
+                    //FIXME : open request user acception
                     
                     String d = generateResponseForService(map);
                     sessionData.setStatus(SessionHandler.SessionStatusEnum.VERIFYOK);
@@ -57,13 +62,13 @@ public class PackageHandler {
                 else {
                     sessionData.setStatus(SessionHandler.SessionStatusEnum.VERIFYFAIL);
             SessionHandler.getInstance().updateSession(sessionData);
-                    return null;}
+                    return getErrorReponse("verifyService fail");}
                         }
         
             else{
                 sessionData.setStatus(SessionHandler.SessionStatusEnum.VERIFYFAIL);
             SessionHandler.getInstance().updateSession(sessionData);
-                return null ;
+                return getErrorReponse("Wrong format") ;
             }
         }
         else{
@@ -71,13 +76,17 @@ public class PackageHandler {
         }
     }
     public Map<String, JSONObject> validateServiceDataFormat(JSONObject json){
-        if(json.has(ApiFormat.CL_SERNAME) && json.has(ApiFormat.CL_PERMISSION)){
+        String p_label = "permission";
+        String s_label = "sessionId";
+        if(json.has("permission") && json.has("sessionId")){
             try {
-                JSONObject j1 = new JSONObject(json.getString(ApiFormat.CL_SERNAME));
-                JSONObject j2 = new JSONObject(json.get(ApiFormat.CL_PERMISSION));
+                JSONObject j1 = new JSONObject();
+                JSONObject j2 = new JSONObject();
+                j1.put(p_label, json.getString(p_label));
+                j2.put(s_label, json.getString(s_label));
                 Map<String, JSONObject> map = new HashMap<String, JSONObject>();
-                map.put(ApiFormat.CL_SERNAME, j1);
-                map.put(ApiFormat.CL_PERMISSION, j2);
+                map.put(p_label, j1);
+                map.put(s_label, j2);
                 
                 return map;
             } catch (JSONException ex) {
@@ -92,50 +101,38 @@ public class PackageHandler {
     }
     public boolean verifyService(Map<String, JSONObject> map){
         boolean valid = true;
-        for(Map.Entry<String, JSONObject> e : map.entrySet()){
-            valid&=verifyItem(e.getValue(), e.getKey());
-            if(valid == false) return valid;
-        }
-        if(valid){
-            
-            return true;
-        }
-        else return false;
-    }
-    public boolean verifyItem(JSONObject json, String basename){
+        
+        JSONObject p_json = map.get("permission");
         try {
-            String message = json.getString(ApiFormat.VALUE);
-            String Ssig  = json.getString(ApiFormat.SIG);
-            //String Scert = json.getString(ApiFormat.CERT);
-            String Ssid= json.getString(ApiFormat.SESSIONID);
-            
-            if(localsessionId == null) localsessionId = Ssid;
-            if(!checkSessionId(Ssid)) return false;
-            
-            String Ssesig = json.getString(ApiFormat.SESSION_SIG);
-            
-            //parse
-            if(verifier != null && ipk != null){
-            // signature on sessionId
+            byte[] sig_data = DirtyWork.hexStringToByteArray(p_json.getString("credential_permission"));
+            //Parse to signature on localSessinId wrt basename = "permission"
             Authenticator.EcDaaSignature sig = new Authenticator.EcDaaSignature(
-                    DirtyWork.hexStringToByteArray(Ssig),
-                    localsessionId.toString().getBytes(),
-                    curve
-                    
-            );
+                sig_data,localsessionId.getBytes(),curve
+                );
+            //Verify and Examine permission
+            String per = p_json.getString(PERMISSION);
+            boolean b =verifier.verifyWrt(per.getBytes() , localsessionId.getBytes(), sig, PERMISSION, ipk, null);
+            return b;
             
-            
-            boolean valid = true;
-            valid &= verifier.verifyWrt(message.getBytes(), localsessionId.getBytes(), sig, basename, ipk, null);
-            
-            return valid;
-            }
-            else return false;
         } catch (Exception ex) {
             Logger.getLogger(PackageHandler.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+        
+       
     }
+    private String extractServiceName(Map<String, JSONObject> map){
+        JSONObject p_json = map.get(PERMISSION);
+        
+            try {
+                 return p_json.getString("service_name");
+            } catch (JSONException ex) {
+                Logger.getLogger(PackageHandler.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            }
+        
+    }
+    
             
     public static boolean checkStatusInJSON(JSONObject json){
         if(json.has(ApiFormat.STATUS)){
@@ -169,54 +166,48 @@ public class PackageHandler {
         else return false;
     }
     private String generateResponseForService(Map<String, JSONObject> map){
-              
-            
-            String s = collectDataByFields(map);
-            return s;
-        
-
-    }
-    private String collectDataByFields(Map<String, JSONObject> map){
-        JSONObject j = map.get(ApiFormat.CL_PERMISSION);
-        String[] fs;
-        String sessionId;
+           JSONObject p_json = map.get(PERMISSION);
         try {
-            fs = j.getString(ApiFormat.VALUE).split(",");
-            sessionId = json.getString(ApiFormat.SESSIONID);
+            //get Ano-id member type id 
+            String mitd = "1" ; //for User type
+            String level = p_json.getString(mitd);
+            //get level data 
+            String res = collectDataInLevel(level, map);
+            return res;
+            
         } catch (JSONException ex) {
             Logger.getLogger(PackageHandler.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        if(fs!= null && fs.length >0){
-        JSONObject res =new JSONObject();
-        for(int i=0; i< fs.length; i++){
-            JSONObject d = new JSONObject();
-            try {
-                d.put(ApiFormat.VALUE,Data.getInstance().getValueOfField(fs[i]));
-                String message = d.toString();
-                d.put(ApiFormat.SESSIONID, sessionId);
-                Authenticator tmp_aut = Data.getInstance().getAuthenticator(fs[i]);
-                Issuer.JoinMessage2 jm2 = new Issuer.JoinMessage2(curve, Data.getInstance().getCredentialOfField(fs[i]));
-                //sign sessionId
-                Authenticator.EcDaaSignature sig = tmp_aut.EcDaaSignWrt(sessionId.getBytes(), fs[i],sessionId.toString());
-                
-                d.put(ApiFormat.SIG, DirtyWork.bytesToHex(sig.encode(curve)));
-                
-                res.put(fs[i], d.toString());
-            } catch (Exception ex) {
-                Logger.getLogger(PackageHandler.class.getName()).log(Level.SEVERE, null, ex);
-                return null;
-            }
+    }
+    private String collectDataInLevel(String level,Map<String, JSONObject> map){
+        String info = Data.getInstance().getValueOfField(level);
+        String cre = Data.getInstance().getCredentialOfField(level);
+        String gsk = Data.getInstance().getGskOfField(level);
+        try {
+            JSONObject s_json = map.get("sessionId");
+            String sessionId = s_json.getString("sessionId");
+            //create sign on value of JSON
+            Authenticator au = new Authenticator(curve, ipk, new BigInteger(gsk));
+            Issuer.JoinMessage2 jm2 = new Issuer.JoinMessage2(curve, cre);
+            au.EcDaaJoin2(jm2);
+            Authenticator.EcDaaSignature sig = au.EcDaaSignWrt(sessionId.getBytes(), level, sessionId);
+            JSONObject res = new JSONObject();
+            res.put("information",info);
+            res.put("signature", DirtyWork.bytesToHex(sig.encode(curve)));
+            res.put(ApiFormat.STATUS, ApiFormat.OK);
+            return res.toString();
+        } catch (Exception ex) {
+            Logger.getLogger(PackageHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
             
             
-        }
-        return res.toString();
-        }
+        
+
     
-    else{
-    return null;
-}
-}
+    
     public static String getErrorReponse(String msg){
         try {
             JSONObject j = new JSONObject();
