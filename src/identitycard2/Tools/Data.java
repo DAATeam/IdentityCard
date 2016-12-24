@@ -7,10 +7,13 @@ package identitycard2.Tools;
 
 import identitycard2.Config.ConfigParser;
 import identitycard2.DirtyWork;
+import identitycard2.HttpServer.SessionHandler;
 import identitycard2.IdentityCard2;
 import identitycard2.Models.Authenticator;
 import identitycard2.Models.Issuer;
 import identitycard2.JoinApi.ApiFormat;
+import identitycard2.Models.Verifier;
+import identitycard2.RequestTask.ReceivedInfoOberservable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,6 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import javafx.scene.control.TableRow;
 import org.json.JSONException;
 /**
  *
@@ -54,6 +58,8 @@ public class Data extends Observable{
     public final String SIG = "sig";
     public final String CERT = "cert";
     
+    //verify data
+    ReceivedInfoOberservable receiveInfo = null;
 
     @Override
     protected synchronized void setChanged() {
@@ -171,6 +177,7 @@ public class Data extends Observable{
                     f.setEsk(json.getString(f.getTAG_esk()));
                     f.setValue(json.getString(k));
                     f.setCredential(json.getString(f.getTAG_credential()));
+                    f.setGsk(json.getString(f.getTAG_gsk()));
                     fields.add(f);
                 }
             }while(is.hasNext());
@@ -182,6 +189,7 @@ public class Data extends Observable{
                     f.setEsk(json.getString(f.getTAG_esk()));
                     f.setValue(json.getString(k));
                     f.setCredential(json.getString(f.getTAG_credential()));
+                    f.setGsk(json.getString(f.getTAG_gsk()));
                     fields.add(f);
             
             
@@ -370,6 +378,50 @@ public class Data extends Observable{
               Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
               return null;
           }
+    
+    }          
+
+
+
+    public ReceivedInfoOberservable getReceiveInfo() {
+        return receiveInfo;
     }
 
+    public void setReceiveInfo(ReceivedInfoOberservable receiveInfo) {
+        this.receiveInfo = receiveInfo;
+        
+    }
+    public ArrayList<Info> collectionInfoFromData(){
+        ArrayList<Info> ai = new ArrayList<Info>();
+        for(Field f : fields){
+            if(!f.getTAG().equals(ApiFormat.PERMISSION)){
+                try {
+                    JSONObject d_json = new JSONObject(f.getValue());
+                    Iterator ite =d_json.keys();
+                    while(ite.hasNext()){
+                        String k =  (String) ite.next();
+                        if(!k.equals("expire_date") && !hasKey(ai, k)){
+                            
+                            Info info = new Info();
+                            info.setField(k);
+                            info.setValue(d_json.getString(k));
+                            ai.add(info);
+                            
+                        }
+                    }
+                } catch (JSONException ex) {
+                    Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+                    return null;
+                }
+            }
+        }
+        return ai;
+    }
+    private boolean hasKey(ArrayList<Info> al, String key){
+       for(Info i : al){
+           if(i.getField().equals(key)) return true;
+       }
+       return false;
+    }
+    
 }

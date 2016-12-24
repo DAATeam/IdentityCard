@@ -70,9 +70,13 @@ public class Authenticator {
 			if(!sk.mod(this.curve.getOrder()).equals(sk)) {
 				throw new IllegalArgumentException("The sk must be between zero and the group order.");
 			}
+                        
 		}
 		this.Q = this.curve.getG1().multiplyPoint(this.sk);
+                if(sk ==null){
 		this.joinState = JoinState.NOT_JOINED;
+                }
+                else this.joinState = JoinState.IN_PROGRESS;
 	}
 
     public BigInteger getSk() {

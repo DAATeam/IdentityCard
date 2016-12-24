@@ -8,27 +8,32 @@
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/JoinApi/ApiFormat.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/JoinApi/CertApiHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/crypto/MD5Helper.java</file>
-            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyApi/verifyApiHandler.java</file>
-            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyApi/getVerifierApi.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Models/Verifier.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/LoginController.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/HttpServer/verifyServicePostHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/MainController.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/HttpServer/SessionHandler.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Config/ConfigParser.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Tools/Field.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/HttpServer/MyHttpServer.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/RequestTask/RequestTask.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/JoinApi/GetCertTask.java</file>
-            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyApi/postVerifierApi.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/dist/data/data</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/RequestTask/RequestNonTask.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/HttpServer/newSessionGetHandler.java</file>
-            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyApi/ApiRequester.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/dist/config.xml</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/HttpServer/SessionData.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyOld/verifyApiHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/JoinApi/Jm1ApiHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Tools/Data.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Config/config.xml</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/Models/Authenticator.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/crypto/DESEncryptor.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/HttpServer/indexGetHandler.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyOld/ApiRequester.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/JoinApi/JoinApiHandler.java</file>
             <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/IdentityCard2.java</file>
+            <file>file:/home/nguyenduyy/WorkSpace/NetBeanWorkSpace/IdentityCard2/src/identitycard2/VerifyOld/postVerifierApi.java</file>
         </group>
     </open-files>
 </project-private>

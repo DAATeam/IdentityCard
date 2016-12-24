@@ -41,6 +41,15 @@ public class SessionHandler {
         }
         return null;
     }
+    public SessionData getSessionByOfPartner(String partner_address){
+        for(SessionData sd : sessionList){
+            if(sd.getPartnerName().equals(partner_address)){
+                
+                return sd;
+            }
+        }
+        return null;
+    }
     
     public boolean isFreshSessionId(String sid){
         for(SessionData s : sessionList){

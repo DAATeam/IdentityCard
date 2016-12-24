@@ -34,6 +34,9 @@ public class verifyServicePostHandler implements HttpHandler {
                  try{
                      JSONObject json = new JSONObject(query);
                      pk = new PackageHandler(json);
+                     
+                     pk.sessionData = sessionHandler.getSessionByOfPartner(he.getRemoteAddress().getHostName());
+                     pk.localsessionId = pk.sessionData.getSessionId();
                      response = pk.handle();
                      
                  }catch(Exception e){

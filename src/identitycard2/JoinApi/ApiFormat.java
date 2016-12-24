@@ -51,4 +51,7 @@ public class ApiFormat {
     public static String CL_MESSAGE ="message";
     public static String CL_M_TYPE_ID = "member_type_id";
     public static String CL_M_TYPE_PREFIX = "mprefix";
+    
+    public static String PERMISSION = "permission";
+    
 }

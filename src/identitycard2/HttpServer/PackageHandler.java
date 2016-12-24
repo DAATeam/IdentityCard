@@ -51,7 +51,7 @@ public class PackageHandler {
             if(map != null){
                 boolean valid = verifyService(map);
                 if(valid){
-                    String sn = extractServiceName(map);
+                    //String sn = extractServiceName(map);
                     //FIXME : open request user acception
                     
                     String d = generateResponseForService(map);
@@ -78,15 +78,18 @@ public class PackageHandler {
     public Map<String, JSONObject> validateServiceDataFormat(JSONObject json){
         String p_label = "permission";
         String s_label = "sessionId";
-        if(json.has("permission") && json.has("sessionId")){
+        if(json.has(ApiFormat.PERMISSION) && json.has(ApiFormat.SESSIONID) && json.has(ApiFormat.SIG)){
             try {
                 JSONObject j1 = new JSONObject();
                 JSONObject j2 = new JSONObject();
+                JSONObject j3 = new JSONObject();
                 j1.put(p_label, json.getString(p_label));
                 j2.put(s_label, json.getString(s_label));
+                j3.put(ApiFormat.SIG, json.getString(ApiFormat.SIG));
                 Map<String, JSONObject> map = new HashMap<String, JSONObject>();
                 map.put(p_label, j1);
                 map.put(s_label, j2);
+                map.put(ApiFormat.SIG, j3);
                 
                 return map;
             } catch (JSONException ex) {
@@ -104,7 +107,7 @@ public class PackageHandler {
         
         JSONObject p_json = map.get("permission");
         try {
-            byte[] sig_data = DirtyWork.hexStringToByteArray(p_json.getString("credential_permission"));
+            byte[] sig_data =DirtyWork.hexStringToByteArray(map.get(ApiFormat.SIG).getString(ApiFormat.SIG));
             //Parse to signature on localSessinId wrt basename = "permission"
             Authenticator.EcDaaSignature sig = new Authenticator.EcDaaSignature(
                 sig_data,localsessionId.getBytes(),curve
@@ -169,8 +172,9 @@ public class PackageHandler {
            JSONObject p_json = map.get(PERMISSION);
         try {
             //get Ano-id member type id 
+            JSONObject json = new JSONObject(p_json.getString(PERMISSION));
             String mitd = "1" ; //for User type
-            String level = p_json.getString(mitd);
+            String level = json.getString(mitd);
             //get level data 
             String res = collectDataInLevel(level, map);
             return res;
@@ -191,10 +195,11 @@ public class PackageHandler {
             Authenticator au = new Authenticator(curve, ipk, new BigInteger(gsk));
             Issuer.JoinMessage2 jm2 = new Issuer.JoinMessage2(curve, cre);
             au.EcDaaJoin2(jm2);
-            Authenticator.EcDaaSignature sig = au.EcDaaSignWrt(sessionId.getBytes(), level, sessionId);
+            //FIXME : Now, user fix basename for easy test
+            Authenticator.EcDaaSignature sig = au.EcDaaSignWrt(sessionId.getBytes(), "verification", sessionId);
             JSONObject res = new JSONObject();
             res.put("information",info);
-            res.put("signature", DirtyWork.bytesToHex(sig.encode(curve)));
+            res.put(ApiFormat.SIG, DirtyWork.bytesToHex(sig.encode(curve)));
             res.put(ApiFormat.STATUS, ApiFormat.OK);
             return res.toString();
         } catch (Exception ex) {
