@@ -71,5 +71,19 @@ public class SessionHandler {
         return false;
         
     }
+    public void removeSessionByPartnerName(String host){
+        for(SessionData sd : sessionList){
+            if(sd.getPartnerName().equals(host)){
+                sessionList.remove(sd);
+            }
+        }
+    }
+    public void removeSessionBySessionID(String session){
+        for(SessionData sd : sessionList){
+            if(sd.getSessionId().equals(session)){
+                sessionList.remove(sd);
+            }
+        }
+    }
         
 }

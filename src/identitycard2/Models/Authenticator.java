@@ -153,6 +153,48 @@ public class Authenticator {
 		
 		return success;
 	}
+        public boolean EcDaaJoin2Wrt(JoinMessage2 message,String info) throws NoSuchAlgorithmException {
+		if(this.joinState != JoinState.IN_PROGRESS) {
+			throw new IllegalStateException("The authenticator has already joined or a join operation is in progress");
+		}
+		
+		boolean success = true;
+		BigInteger l = this.curve.hashModOrder(info.getBytes());
+		// Check that the points are indeed in the group
+		success &= this.curve.isInG1(message.a);
+		success &= this.curve.isInG1(message.b);
+		success &= this.curve.isInG1(message.c);
+		success &= this.curve.isInG1(message.d.multiplyPoint(l));
+                
+		ECPoint W = this.curve.getG1().multiplyPoint(sk).multiplyPoint(l);
+		// Check that this is not the trivial credential (1,1,1,1)
+		success &= !this.curve.isIdentityG1(message.a);
+		
+		// Verify that c2, s2 proves SPK{(t): b = g_1^t and d = Q^t}
+		success &= message.c2.equals(this.curve.hashModOrder(
+				this.curve.point1ToBytes(this.curve.getG1().multiplyPoint(message.s2).subtractPoint(message.b.multiplyPoint(message.c2))),
+				this.curve.point1ToBytes(W.multiplyPoint(message.s2).subtractPoint(message.d.multiplyPoint(l).multiplyPoint(message.c2))),
+				this.curve.point1ToBytes(this.curve.getG1()),
+				this.curve.point1ToBytes(message.b),
+				this.curve.point1ToBytes(W),
+				this.curve.point1ToBytes(message.d.multiplyPoint(l))));
+		
+		// Verify credential
+       		success &= this.curve.pair(message.a, this.issuerPk.Y).equals(this.curve.pair(message.b, this.curve.getG2()));
+		success &= this.curve.pair(message.c, this.curve.getG2()).equals(this.curve.pair(message.a.clone().addPoint(message.d.multiplyPoint(l)), this.issuerPk.X));
+                
+                
+		if(success) {
+			// Store the credential
+			this.a = message.a;
+			this.b = message.b;
+			this.c = message.c;
+			this.d = message.d;
+			this.joinState = JoinState.JOINED;
+		}
+		
+		return success;
+	}
 	
 	private byte[] buildAndEncodeKRD() {
 		//FIXME provide meaningful implementation
@@ -202,20 +244,21 @@ public class Authenticator {
             ecdaaSIg.nym = hash;
             return ecdaaSIg;
         }
-        public EcDaaSignature EcDaaSignWrt(byte[] session ,String basename, String message ) throws NoSuchAlgorithmException {
+        public EcDaaSignature EcDaaSignWrt(byte[] info ,String basename, String message ) throws NoSuchAlgorithmException {
 		if(this.joinState != JoinState.JOINED){
 			throw new IllegalStateException("The authenticator must join before it can sign");
 		}
 		
 		//byte[] krd = this.buildAndEncodeKRD();
                 byte[] krd = message.getBytes();
-		
+		BigInteger h = this.curve.hashModOrder(info);
 		// Randomize the credential
-		BigInteger l = this.curve.hashModOrder(session);
+                BigInteger l = this.curve.getRandomModOrder(random);
+		//BigInteger l = this.curve.hashModOrder(session);
 		ECPoint r = a.multiplyPoint(l);
 		ECPoint s = b.multiplyPoint(l);
 		ECPoint t = c.multiplyPoint(l);
-		ECPoint w = d.multiplyPoint(l);		
+		ECPoint w = d;
 		
 		// Create proof SPK{(sk): w = s^sk}(krd, appId)
 		BigInteger r2 = this.curve.getRandomModOrder(random);
@@ -223,13 +266,12 @@ public class Authenticator {
 		BigInteger c2 = this.curve.hashModOrder(
 				this.curve.point1ToBytes(u),
 				this.curve.point1ToBytes(s),
-				this.curve.point1ToBytes(w),
+				this.curve.point1ToBytes(w.multiplyPoint(h).multiplyPoint(l)),
 				basename.getBytes(),
 				this.curve.hash(krd));
-                BigInteger s2 = r2.add(c2.multiply(this.sk).mod(this.curve.getOrder())).mod(this.curve.getOrder());
-		return new EcDaaSignature(r, s, t, w, c2, s2, krd);
+                BigInteger s2 = r2.add(c2.multiply(this.sk).multiply(h).mod(this.curve.getOrder())).mod(this.curve.getOrder());
+		return new EcDaaSignature(r, s, t, w.multiplyPoint(l), c2, s2, krd);
         }
-        
 	
 	/**
 	 * Data type holding ECDAA signatures
@@ -237,7 +279,7 @@ public class Authenticator {
 	 *
 	 */
 	public static class EcDaaSignature {
-		public final ECPoint r, s, t, w;
+		public  ECPoint r, s, t, w;
 		public final BigInteger c2, s2;
 		public final byte[] krd;
                 //nym implementation

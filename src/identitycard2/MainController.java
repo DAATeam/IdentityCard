@@ -229,6 +229,7 @@ public class MainController implements Initializable, Observer {
                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                 
             }
+            
     }
     }
     private ArrayList<Info> fromStringJSONToArrayList(String m){
@@ -307,20 +308,18 @@ public class MainController implements Initializable, Observer {
               Authenticator.EcDaaSignature sig = new Authenticator.EcDaaSignature(sig_b, lsid.getBytes(), Data.getInstance().getBNCurve());
               String basename = "verification";
               boolean b;
-            try {
-                b = v.verifyWrt(info.getBytes(),lsid.getBytes(),sig,basename,Data.getInstance().getIssuerPubicKey(), null);
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                b = false;
-            }
+            
+              b = v.verifyWrt(info.getBytes(),lsid.getBytes(),sig,basename,Data.getInstance().getIssuerPubicKey(), null);
+            
+            
              return b;
               
               
-          } catch (JSONException ex) {
+          } catch (Exception ex) {
               Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
               return false;
           }
         
         
     }
-}
+}   

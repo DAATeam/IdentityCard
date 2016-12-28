@@ -56,6 +56,7 @@ public class PackageHandler {
                     
                     String d = generateResponseForService(map);
                     sessionData.setStatus(SessionHandler.SessionStatusEnum.VERIFYOK);
+                    SessionHandler.getInstance().removeSessionBySessionID(sessionData.getSessionId());
                     SessionHandler.getInstance().updateSession(sessionData);
                     return d;
                 }
@@ -194,9 +195,9 @@ public class PackageHandler {
             //create sign on value of JSON
             Authenticator au = new Authenticator(curve, ipk, new BigInteger(gsk));
             Issuer.JoinMessage2 jm2 = new Issuer.JoinMessage2(curve, cre);
-            au.EcDaaJoin2(jm2);
+            au.EcDaaJoin2Wrt(jm2,info);
             //FIXME : Now, user fix basename for easy test
-            Authenticator.EcDaaSignature sig = au.EcDaaSignWrt(sessionId.getBytes(), "verification", sessionId);
+            Authenticator.EcDaaSignature sig = au.EcDaaSignWrt(info.getBytes(), "verification", sessionId);
             JSONObject res = new JSONObject();
             res.put("information",info);
             res.put(ApiFormat.SIG, DirtyWork.bytesToHex(sig.encode(curve)));

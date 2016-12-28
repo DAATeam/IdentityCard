@@ -134,12 +134,15 @@ public class RequestTask extends Task<JSONObject>{
             wr.close();
         
         String info = handleResponse(con);
-        if(info == null) return null;
+        if(info == null){
+            SessionHandler.getInstance().removeSessionBySessionID(sd.getPartnerName());
+            return null;
+        }
         ReceivedInfoOberservable rio = new ReceivedInfoOberservable();
         rio.response = new JSONObject(info);
         //notify UI thread
         Data.getInstance().setReceiveInfo(rio);
-                
+        
         return new JSONObject(info);
             
         
@@ -149,8 +152,8 @@ public class RequestTask extends Task<JSONObject>{
         try {
             Authenticator au = new Authenticator(curve, ipk, new BigInteger(gsk));
             Issuer.JoinMessage2 jm2 = new Issuer.JoinMessage2(curve, cre);
-            au.EcDaaJoin2(jm2);
-            Authenticator.EcDaaSignature sig = au.EcDaaSignWrt(sid.getBytes(),basename, sid);
+            au.EcDaaJoin2Wrt(jm2,info);
+            Authenticator.EcDaaSignature sig = au.EcDaaSignWrt(info.getBytes(),basename, sid);
             
             return sig;
         } catch (NoSuchAlgorithmException ex) {
