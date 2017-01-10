@@ -1,0 +1,10 @@
+<root>
+    <issuer-address>
+        http://localhost:8080/daa-issuer
+    </issuer-address>
+    <fields>
+        <item>user_name</item>
+        <item>user_job</item>
+    </fields>
+    <listen-port>6970</listen-port>
+</root>

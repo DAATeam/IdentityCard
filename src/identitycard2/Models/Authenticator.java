@@ -183,15 +183,15 @@ public class Authenticator {
        		success &= this.curve.pair(message.a, this.issuerPk.Y).equals(this.curve.pair(message.b, this.curve.getG2()));
 		success &= this.curve.pair(message.c, this.curve.getG2()).equals(this.curve.pair(message.a.clone().addPoint(message.d.multiplyPoint(l)), this.issuerPk.X));
                 
-                
-		if(success) {
+                //an attacker can remove this , let check 
+		//if(success) {
 			// Store the credential
 			this.a = message.a;
 			this.b = message.b;
 			this.c = message.c;
 			this.d = message.d;
 			this.joinState = JoinState.JOINED;
-		}
+		//}
 		
 		return success;
 	}

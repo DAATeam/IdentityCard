@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="IdentityCard2.jar" size="1794928" download="eager" />
+    <jar href="IdentityCard2.jar" size="1798710" download="eager" />
     <jar href="lib/gson-2.7.jar" size="231952" download="eager" />
     <jar href="lib/iaik_eccelerate.jar" size="384917" download="eager" />
     <jar href="lib/iaik_eccelerate_addon.jar" size="77130" download="eager" />

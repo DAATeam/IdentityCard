@@ -135,7 +135,7 @@ public class RequestTask extends Task<JSONObject>{
         
         String info = handleResponse(con);
         if(info == null){
-            SessionHandler.getInstance().removeSessionBySessionID(sd.getPartnerName());
+            SessionHandler.getInstance().removeSessionBySessionID(sd.getSessionId());
             return null;
         }
         ReceivedInfoOberservable rio = new ReceivedInfoOberservable();

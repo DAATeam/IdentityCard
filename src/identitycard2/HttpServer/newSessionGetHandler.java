@@ -23,7 +23,7 @@ public class newSessionGetHandler implements HttpHandler{
         sessionHandler = SessionHandler.getInstance();
         //get other parameter such as basename, service name, link ,...
         SessionData sd = createNewSessionData();
-        sd.setPartnerName(he.getRemoteAddress().getHostName());
+        sd.setPartnerName(he.getRemoteAddress().getHostString()+ he.getRemoteAddress().getPort());
         sessionHandler.createSession(sd);
         //response
         String response = sd.getSessionId();

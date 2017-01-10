@@ -46,9 +46,6 @@ public class MyHttpServer {
 
     }
     public void start(){
-        httpServer.start();
-    }
-    private MyHttpServer(){
         try {
             Integer configPort = ConfigParser.getInstance().getListenPort();
             if(configPort != null) port = configPort;
@@ -59,11 +56,14 @@ public class MyHttpServer {
             httpServer.createContext("/verify", new verifyServicePostHandler());
             httpServer.createContext("/new", new newSessionGetHandler());
             httpServer.setExecutor(null);
-            
+            httpServer.start();
             
         } catch (IOException ex) {
             Logger.getLogger(MyHttpServer.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    private MyHttpServer(){
+        
     }
 
     public int getPort() {

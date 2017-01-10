@@ -46,7 +46,7 @@ public class Data extends Observable{
     private String esk;
     private String ipk;
     
-    
+    private Integer member_type;
     private String appId , curve;
     private BNCurve BNCurve = null;
     
@@ -164,7 +164,7 @@ public class Data extends Observable{
             
             appId =json.getString("appId");
             curve = json.getString("curve");
-            
+            member_type = json.getInt("member_type");
             ipk = json.getString("ipk");
             //esk = json.getString("esk");
             Iterator is = json.keys();
@@ -423,5 +423,63 @@ public class Data extends Observable{
        }
        return false;
     }
+    //get Permision data
+    public ArrayList<Permission> getAllPermission(){
+        String json_s = getValueOfField(ApiFormat.PERMISSION);
+        ArrayList<Permission> ap = new ArrayList<>();
+          try {
+              JSONObject json = new JSONObject(json_s);
+              Iterator ite = json.keys();
+              while(ite.hasNext()){
+                  
+                  String k = (String)ite.next();
+                  if(!k.equals("expire_date")&&!k.equals("member_type_id")){
+                  Permission p = new Permission();
+                  p.setMember_type_id(new Integer(k));
+                  p.setLevel(json.getString(k));
+                  ap.add(p);
+                  }
+              }
+              return ap;
+          } catch (JSONException ex) {
+              Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+              return null;
+          }
+        
+    }
+    //get Level info
+    public ArrayList<identitycard2.Tools.Level> getAllLevelInfo(){
+        ArrayList<identitycard2.Tools.Level> al = new ArrayList();
+        try{
+        for(String t : TAGS){
+            JSONObject js =new JSONObject( getValueOfField(t));
+            identitycard2.Tools.Level l = new identitycard2.Tools.Level();
+            l.setLevel_name(t);
+            Iterator ite = js.keys();
+            ArrayList<String> fs = new ArrayList<>();
+            while(ite.hasNext()){
+                String k = (String) ite.next();
+                if(!k.equals("expire_date")){
+                fs.add(k);
+                }
+            }
+            l.setFields(String.join(",", fs));
+            al.add(l);
+        }
+        return al;
+        }catch(Exception e){
+             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, e);
+              return null;
+        }
+    }
+
+    public Integer getMember_type() {
+        return member_type;
+    }
+
+    public void setMember_type(Integer member_type) {
+        this.member_type = member_type;
+    }
+    
     
 }

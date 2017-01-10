@@ -53,5 +53,7 @@ public class ApiFormat {
     public static String CL_M_TYPE_PREFIX = "mprefix";
     
     public static String PERMISSION = "permission";
+    public static String CL_DRIVE = "user_drive_expire";
+    public static String CL_ACCOUNT = "user_account";
     
 }

@@ -56,8 +56,11 @@ public class PackageHandler {
                     
                     String d = generateResponseForService(map);
                     sessionData.setStatus(SessionHandler.SessionStatusEnum.VERIFYOK);
-                    SessionHandler.getInstance().removeSessionBySessionID(sessionData.getSessionId());
+                    
                     SessionHandler.getInstance().updateSession(sessionData);
+                    synchronized (this){
+                    SessionHandler.getInstance().removeSessionBySessionID(sessionData.getSessionId());
+                    }
                     return d;
                 }
                 else {
@@ -174,7 +177,7 @@ public class PackageHandler {
         try {
             //get Ano-id member type id 
             JSONObject json = new JSONObject(p_json.getString(PERMISSION));
-            String mitd = "1" ; //for User type
+            String mitd = Integer.toString(Data.getInstance().getMember_type());
             String level = json.getString(mitd);
             //get level data 
             String res = collectDataInLevel(level, map);

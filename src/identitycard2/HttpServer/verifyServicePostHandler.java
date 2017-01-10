@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 
 /**
@@ -35,11 +37,12 @@ public class verifyServicePostHandler implements HttpHandler {
                      JSONObject json = new JSONObject(query);
                      pk = new PackageHandler(json);
                      
-                     pk.sessionData = sessionHandler.getSessionByOfPartner(he.getRemoteAddress().getHostName());
+                     pk.sessionData = sessionHandler.getSessionByOfPartner(he.getRemoteAddress().getHostString()+ he.getRemoteAddress().getPort());
                      pk.localsessionId = pk.sessionData.getSessionId();
                      response = pk.handle();
                      
                  }catch(Exception e){
+                     Logger.getLogger(PackageHandler.class.getName()).log(Level.SEVERE, null, e);
                       response = null;
                  }
                  

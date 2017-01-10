@@ -7,6 +7,7 @@ package identitycard2.HttpServer;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -27,7 +28,7 @@ public class SessionHandler {
     private SessionHandler() {
         sessionList = new ArrayList<>();
     }
-    public void createSession(SessionData data){
+    public synchronized void createSession(SessionData data){
         if(isFreshSessionId(data.getSessionId())){
         sessionList.add(data);
         }
@@ -60,7 +61,7 @@ public class SessionHandler {
         }
         return true;
     }
-    public boolean updateSession(SessionData s){
+    public synchronized boolean updateSession(SessionData s){
         String id = s.getSessionId();
         for(int i=0; i< sessionList.size(); i++){
             if(sessionList.get(i).getSessionId().equals(s.getSessionId())){
@@ -71,17 +72,19 @@ public class SessionHandler {
         return false;
         
     }
-    public void removeSessionByPartnerName(String host){
+    public synchronized void removeSessionByPartnerName(String host){
         for(SessionData sd : sessionList){
             if(sd.getPartnerName().equals(host)){
                 sessionList.remove(sd);
             }
         }
     }
-    public void removeSessionBySessionID(String session){
-        for(SessionData sd : sessionList){
+    public synchronized void removeSessionBySessionID(String session){
+        Iterator<SessionData> ite = sessionList.iterator();
+        while(ite.hasNext()){
+            SessionData sd = (SessionData) ite.next();
             if(sd.getSessionId().equals(session)){
-                sessionList.remove(sd);
+                ite.remove();
             }
         }
     }
